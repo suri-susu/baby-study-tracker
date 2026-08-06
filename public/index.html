@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 宝宝学习打卡</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FFF5F9;
+  --card: #FFFFFF;
+  --pink: #F472B6;
+  --pink-light: #FCE7F3;
+  --pink-dark: #DB2777;
+  --purple: #A78BFA;
+  --purple-light: #EDE9FE;
+  --purple-dark: #7C3AED;
+  --blue: #60A5FA;
+  --blue-light: #EFF6FF;
+  --orange: #FB923C;
+  --orange-light: #FFF7ED;
+  --green: #34D399;
+  --green-light: #ECFDF5;
+  --yellow: #FBBF24;
+  --yellow-light: #FFFBEB;
+  --red: #F87171;
+  --red-light: #FEF2F2;
+  --text: #374151;
+  --text-secondary: #9CA3AF;
+  --text-light: #D1D5DB;
+  --radius: 20px;
+  --radius-sm: 14px;
+  --shadow: 0 4px 20px rgba(244,114,182,0.1);
+  --shadow-hover: 0 8px 30px rgba(244,114,182,0.18);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 16px 100px;
+  font-size: 15px;
+}
+
+/* ===== Header ===== */
+.app-header {
+  text-align: center;
+  padding: 32px 0 20px;
+}
+.app-header .mascot {
+  font-size: 60px;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.app-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 4px;
+  background: linear-gradient(135deg, var(--pink-dark), var(--purple-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.app-header .subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ===== Sync Status ===== */
+.sync-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.sync-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+}
+.sync-dot.saving { background: var(--yellow); animation: pulse 0.6s infinite; }
+.sync-dot.error { background: var(--red); }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ===== Streak Banner ===== */
+.streak-banner {
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.streak-fire { font-size: 36px; }
+.streak-info .streak-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: #92400E;
+}
+.streak-info .streak-label {
+  font-size: 12px;
+  color: #B45309;
+}
+
+/* ===== Star Bar ===== */
+.star-bar {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.star-icon { font-size: 32px; }
+.star-count {
+  font-size: 28px;
+  font-weight: 800;
+  color: #D97706;
+  flex: 1;
+}
+.star-label { font-size: 12px; color: var(--text-secondary); }
+.btn-reward {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(244,114,182,0.3);
+  transition: transform 0.15s;
+}
+.btn-reward:active { transform: scale(0.95); }
+
+/* ===== Category Tabs ===== */
+.cat-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.cat-tab {
+  flex: 1;
+  padding: 10px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 2px solid transparent;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: var(--shadow);
+  color: var(--text-secondary);
+}
+.cat-tab.active {
+  border-color: var(--purple);
+  background: var(--purple-light);
+  color: var(--purple-dark);
+}
+.cat-tab .cat-emoji { font-size: 22px; display: block; margin-bottom: 2px; }
+.cat-tab:active { transform: scale(0.96); }
+
+/* ===== Section Title ===== */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* ===== Subject Cards ===== */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.subject-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid transparent;
+}
+.subject-card:active { transform: scale(0.97); }
+.subject-card.done {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+.subject-emoji { font-size: 36px; margin-bottom: 8px; display: block; }
+.subject-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.subject-goal { font-size: 12px; color: var(--text-secondary); }
+.subject-stars { display: flex; gap: 3px; margin-top: 10px; }
+.subject-star {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg); display: flex; align-items: center;
+  justify-content: center; font-size: 12px; transition: all 0.3s;
+}
+.subject-star.earned {
+  background: linear-gradient(135deg, #FCD34D, #F59E0B);
+  box-shadow: 0 2px 6px rgba(245,158,11,0.3);
+}
+.subject-check {
+  position: absolute; top: 12px; right: 12px; width: 30px; height: 30px;
+  border-radius: 50%; border: 2px dashed var(--text-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: all 0.2s;
+}
+.subject-check.earned { background: var(--green); border: none; color: white; }
+
+.subject-delete {
+  position: absolute; top: 8px; left: 10px; width: 24px; height: 24px;
+  border-radius: 50%; background: transparent; color: var(--text-light);
+  border: none; font-size: 18px; line-height: 24px; text-align: center;
+  cursor: pointer; opacity: 0; transition: opacity 0.15s; padding: 0;
+}
+.subject-card:hover .subject-delete,
+.subject-card:active .subject-delete { opacity: 1; }
+.subject-delete:hover { color: var(--red); background: var(--red-light); }
+
+.subject-add-card {
+  background: var(--card); border-radius: var(--radius); padding: 18px 16px;
+  box-shadow: var(--shadow); cursor: pointer; border: 3px dashed var(--purple-light);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 130px; transition: all 0.2s; color: var(--purple);
+  font-size: 14px; font-weight: 600; gap: 6px;
+}
+.subject-add-card:active { transform: scale(0.97); border-color: var(--purple); }
+.subject-add-card .add-icon { font-size: 36px; font-weight: 300; }
+
+/* ===== Weekly View ===== */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.week-day {
+  text-align: center; padding: 10px 4px; border-radius: var(--radius-sm);
+  background: var(--card); box-shadow: var(--shadow); font-size: 13px;
+  transition: all 0.2s;
+}
+.week-day .day-name { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+.week-day .day-num { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.week-day .day-dots { display: flex; justify-content: center; gap: 2px; flex-wrap: wrap; }
+.week-day .day-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+.week-day.today { border: 2px solid var(--pink); background: var(--pink-light); }
+.week-day.past { opacity: 0.5; }
+
+/* ===== Reward Modal ===== */
+.modal-overlay {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--card); border-radius: var(--radius); padding: 24px;
+  width: 360px; max-width: 90vw; box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+  max-height: 80vh; overflow-y: auto;
+}
+.modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 16px; text-align: center; }
+.modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+
+.reward-item {
+  display: flex; align-items: center; gap: 12px; padding: 14px;
+  border-radius: var(--radius-sm); background: var(--bg); margin-bottom: 10px;
+  cursor: pointer; transition: all 0.15s; border: 2px solid transparent;
+}
+.reward-item:hover { border-color: var(--purple); transform: translateX(4px); }
+.reward-item.affordable { border-color: var(--green); }
+.reward-item .reward-emoji { font-size: 32px; }
+.reward-item .reward-info { flex: 1; }
+.reward-item .reward-name { font-size: 15px; font-weight: 600; }
+.reward-item .reward-cost { font-size: 13px; color: var(--pink-dark); }
+.reward-item .reward-btn {
+  padding: 6px 14px; border-radius: 16px; border: none;
+  background: var(--pink-light); color: var(--pink-dark);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.reward-item .reward-btn:active { transform: scale(0.93); }
+.reward-item .reward-btn.earned { background: var(--pink); color: white; }
+
+/* ===== Parent Panel ===== */
+.parent-trigger { text-align: center; margin: 20px 0; }
+.parent-trigger span {
+  font-size: 12px; color: var(--text-light); cursor: pointer;
+  border-bottom: 1px dashed var(--text-light); padding-bottom: 2px;
+}
+.parent-panel {
+  display: none; background: var(--card); border-radius: var(--radius);
+  padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow);
+}
+.parent-panel.show { display: block; }
+.parent-panel h4 {
+  font-size: 15px; font-weight: 700; margin-bottom: 12px; color: var(--purple-dark);
+}
+.parent-field { margin-bottom: 12px; }
+.parent-field label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+.parent-field input {
+  width: 100%; padding: 10px 14px; border: 1px solid #E5E7EB;
+  border-radius: var(--radius-sm); font-size: 14px; outline: none; font-family: inherit;
+}
+.parent-field input:focus { border-color: var(--purple); }
+
+.subject-list-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px;
+  border-radius: var(--radius-sm); background: var(--bg); margin-bottom: 8px;
+}
+.subject-list-item .emoji-input {
+  width: 50px; padding: 6px; border: 1px solid #E5E7EB; border-radius: 8px;
+  font-size: 18px; text-align: center; outline: none;
+}
+.subject-list-item .name-input {
+  flex: 1; padding: 6px 10px; border: 1px solid #E5E7EB;
+  border-radius: 8px; font-size: 14px; outline: none; font-family: inherit;
+}
+.subject-list-item .del-subject {
+  color: var(--text-light); cursor: pointer; font-size: 18px; padding: 2px 6px;
+}
+.subject-list-item .del-subject:hover { color: var(--red); }
+
+.btn {
+  padding: 10px 20px; border-radius: 24px; border: none;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+}
+.btn:active { transform: scale(0.95); }
+.btn-purple {
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  color: white; box-shadow: 0 4px 12px rgba(167,139,250,0.3);
+}
+.btn-ghost { background: var(--bg); color: var(--text-secondary); }
+
+/* ===== Sparks Animation ===== */
+@keyframes spark {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+}
+.spark {
+  position: fixed; pointer-events: none; font-size: 24px;
+  z-index: 999; animation: spark 1s ease-out forwards;
+}
+
+/* ===== Confetti ===== */
+@keyframes confetti-fall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+.confetti {
+  position: fixed; pointer-events: none; font-size: 20px;
+  z-index: 998; animation: confetti-fall 2s ease-in forwards;
+}
+
+@media (max-width: 400px) {
+  .subjects-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .subject-card { padding: 14px 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<div class="app-header">
+  <div class="mascot">🦄</div>
+  <h1 id="app-title">宝宝学习打卡</h1>
+  <div class="subtitle" id="today-label"></div>
+  <div class="sync-status">
+    <span class="sync-dot" id="sync-dot"></span>
+    <span id="sync-text">已同步</span>
+  </div>
+</div>
+
+<!-- ===== Streak ===== -->
+<div class="streak-banner">
+  <div class="streak-fire">🔥</div>
+  <div class="streak-info">
+    <div class="streak-num" id="streak-num">0</div>
+    <div class="streak-label">天连续打卡</div>
+  </div>
+  <div style="flex:1;"></div>
+  <div style="font-size:24px;animation: bounce 1.5s infinite;" id="streak-msg">💪</div>
+</div>
+
+<!-- ===== Star Bar ===== -->
+<div class="star-bar">
+  <div class="star-icon">⭐</div>
+  <div class="star-count" id="total-stars">0</div>
+  <div class="star-label">颗星星</div>
+  <button class="btn-reward" onclick="openRewardModal()">🎁 兑奖</button>
+</div>
+
+<!-- ===== Category Tabs ===== -->
+<div class="cat-tabs">
+  <div class="cat-tab active" data-cat="study" onclick="switchCategory('study')">
+    <span class="cat-emoji">📚</span>学习
+  </div>
+  <div class="cat-tab" data-cat="chores" onclick="switchCategory('chores')">
+    <span class="cat-emoji">🧹</span>家务
+  </div>
+  <div class="cat-tab" data-cat="habits" onclick="switchCategory('habits')">
+    <span class="cat-emoji">🌟</span>生活习惯
+  </div>
+</div>
+
+<!-- ===== Today's Tasks ===== -->
+<div class="section-title" id="tasks-title">📋 今日打卡 · 学习</div>
+<div class="subjects-grid" id="subjects-grid"></div>
+
+<!-- ===== Weekly View ===== -->
+<div class="section-title">📅 本周记录</div>
+<div class="week-grid" id="week-grid"></div>
+
+<!-- ===== Parent Panel ===== -->
+<div class="parent-trigger">
+  <span onclick="toggleParentPanel()">👩‍👧 家长管理</span>
+</div>
+<div class="parent-panel" id="parent-panel">
+  <h4>⚙ 科目设置</h4>
+  <div id="subject-settings"></div>
+
+  <h4 style="margin-top:20px;">🎁 奖励设置</h4>
+  <div id="reward-settings"></div>
+  <div style="margin-top:12px;">
+    <button class="btn btn-purple" onclick="addRewardSetting()">+ 添加奖励</button>
+  </div>
+
+  <h4 style="margin-top:20px;">👶 宝宝名字</h4>
+  <div class="parent-field">
+    <input type="text" id="baby-name" placeholder="输入宝宝的名字" onchange="saveBabyName()">
+  </div>
+
+  <div style="margin-top:16px; display:flex; gap:8px;">
+    <button class="btn btn-purple" onclick="saveAllSettings()">💾 保存设置</button>
+    <button class="btn btn-ghost" onclick="resetToday()">🔄 重置今日</button>
+    <button class="btn btn-ghost" onclick="resetAll()" style="color:var(--red);">🗑 清空数据</button>
+  </div>
+</div>
+
+<!-- ===== Reward Modal ===== -->
+<div class="modal-overlay" id="reward-modal">
+  <div class="modal">
+    <h3>🎁 星星兑换奖励</h3>
+    <div id="reward-list"></div>
+    <div style="text-align:center;margin-top:16px;">
+      <button class="btn btn-ghost" onclick="closeRewardModal()">关 闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Add Subject Modal ===== -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <h3>➕ 添加新项目</h3>
+    <div class="parent-field">
+      <label>图标 Emoji</label>
+      <input type="text" id="add-emoji" value="📝" placeholder="输入emoji">
+    </div>
+    <div class="parent-field">
+      <label>名称</label>
+      <input type="text" id="add-name" placeholder="项目名称">
+    </div>
+    <div class="parent-field">
+      <label>目标描述</label>
+      <input type="text" id="add-goal" placeholder="每天完成1次">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAddModal()">取消</button>
+      <button class="btn btn-purple" onclick="saveNewSubject()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== API Layer =====
+const API = '/api';
+
+async function apiGet(showError) {
+  try {
+    const r = await fetch(API + '/data', { cache: 'no-cache' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch (e) {
+    if (showError !== false) setSyncStatus('error', '连接失败');
+    console.error('GET /api/data failed:', e);
+    return null;
+  }
+}
+
+async function apiSave(partial) {
+  try {
+    setSyncStatus('saving', '保存中...');
+    const r = await fetch(API + '/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(partial)
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (data.ok) {
+      setSyncStatus('ok', '已同步');
+      return true;
+    }
+    throw new Error('Server returned not ok');
+  } catch (e) {
+    setSyncStatus('error', '保存失败');
+    console.error('POST /api/data failed:', e);
+    return false;
+  }
+}
+
+async function apiCheck(subjectId, action) {
+  try {
+    setSyncStatus('saving', '...');
+    const r = await fetch(API + '/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subjectId, action })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (data.ok) {
+      records = data.records;
+      totalStars = data.totalStars;
+      setSyncStatus('ok', '已同步');
+      return true;
+    }
+    throw new Error('Server returned not ok');
+  } catch (e) {
+    setSyncStatus('error', '操作失败');
+    console.error('POST /api/check failed:', e);
+    return false;
+  }
+}
+
+// ===== Sync Status =====
+function setSyncStatus(state, text) {
+  const dot = document.getElementById('sync-dot');
+  const txt = document.getElementById('sync-text');
+  dot.className = 'sync-dot';
+  if (state === 'saving') dot.classList.add('saving');
+  if (state === 'error') dot.classList.add('error');
+  txt.textContent = text;
+}
+
+// ===== Data Layer =====
+let subjects = [];
+let rewards = [];
+let records = {};
+let totalStars = 0;
+let babyName = '宝宝';
+let activeCategory = 'study';
+let pollTimer = null;
+
+// ===== Date Helpers =====
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function formatDateCN(d) {
+  const days = ['日','一','二','三','四','五','六'];
+  return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日 星期' + days[d.getDay()];
+}
+
+// ===== Init =====
+async function initApp() {
+  setSyncStatus('saving', '加载中...');
+  const data = await apiGet();
+  if (data) {
+    subjects = data.subjects || [];
+    rewards = data.rewards || [];
+    records = data.records || {};
+    totalStars = data.totalStars || 0;
+    babyName = data.babyName || '宝宝';
+    setSyncStatus('ok', '已同步');
+  } else {
+    setSyncStatus('error', '离线模式');
+  }
+
+  document.getElementById('today-label').textContent = formatDateCN(new Date());
+  document.getElementById('baby-name').value = babyName;
+  updateTitle();
+  renderAll();
+}
+
+function renderAll() {
+  renderSubjects();
+  renderWeekView();
+  renderParentPanel();
+  updateStreakAndStars();
+}
+
+// ===== Polling for remote changes =====
+let lastHash = '';
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    const data = await apiGet(false);
+    if (!data) return;
+    const hash = JSON.stringify({ records: data.records, totalStars: data.totalStars, babyName: data.babyName, subjects: data.subjects, rewards: data.rewards });
+    if (hash !== lastHash) {
+      lastHash = hash;
+      const changed = (
+        JSON.stringify(data.records) !== JSON.stringify(records) ||
+        data.totalStars !== totalStars ||
+        data.babyName !== babyName ||
+        JSON.stringify(data.subjects) !== JSON.stringify(subjects) ||
+        JSON.stringify(data.rewards) !== JSON.stringify(rewards)
+      );
+      if (changed) {
+        records = data.records || {};
+        totalStars = data.totalStars || 0;
+        babyName = data.babyName || '宝宝';
+        subjects = data.subjects || [];
+        rewards = data.rewards || [];
+        document.getElementById('baby-name').value = babyName;
+        updateTitle();
+        renderAll();
+      }
+    }
+  }, 3000); // Poll every 3 seconds
+}
+
+// ===== Render =====
+function updateTitle() {
+  document.getElementById('app-title').textContent = babyName + '学习打卡';
+  document.title = '🌟 ' + babyName + '学习打卡';
+}
+
+function renderSubjects() {
+  const today = todayStr();
+  const todayRec = records[today] || {};
+  const grid = document.getElementById('subjects-grid');
+  const catNames = { study: '学习', chores: '家务', habits: '生活习惯' };
+  document.getElementById('tasks-title').textContent = '📋 今日打卡 · ' + catNames[activeCategory];
+  const catSubjects = subjects.filter(s => (s.category || 'study') === activeCategory);
+
+  grid.innerHTML = catSubjects.map(s => {
+    const done = !!todayRec[s.id];
+    const starsHtml = new Array(s.starsPerDay || 1).fill(0).map(() => '<div class="subject-star earned">⭐</div>').join('');
+    return `
+    <div class="subject-card ${done ? 'done' : ''}" onclick="toggleSubject('${s.id}')" id="card-${s.id}">
+      <button class="subject-delete" onclick="event.stopPropagation();deleteSubjectCard('${s.id}')" title="删除">×</button>
+      <div class="subject-check ${done ? 'earned' : ''}">${done ? '✓' : ''}</div>
+      <span class="subject-emoji">${s.emoji}</span>
+      <div class="subject-name">${s.name}</div>
+      <div class="subject-goal">${s.goal}</div>
+      <div class="subject-stars">${starsHtml}</div>
+    </div>`;
+  }).join('') + `
+    <div class="subject-add-card" onclick="openAddModal()">
+      <span class="add-icon">+</span>
+      添加新项目
+    </div>`;
+}
+
+function renderWeekView() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+  const dayNames = ['一','二','三','四','五','六','日'];
+  const grid = document.getElementById('week-grid');
+  let html = '';
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const ds = d.toISOString().slice(0, 10);
+    const rec = records[ds] || {};
+    const doneCount = subjects.filter(s => rec[s.id]).length;
+    const isToday = ds === todayStr();
+    const isPast = ds < todayStr();
+    const dots = new Array(Math.min(doneCount, 8)).fill('<div class="day-dot"></div>').join('');
+
+    html += `
+    <div class="week-day ${isToday ? 'today' : ''} ${isPast && !isToday ? 'past' : ''}">
+      <div class="day-name">周${dayNames[i]}</div>
+      <div class="day-num">${d.getDate()}</div>
+      <div class="day-dots">${dots}</div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function switchCategory(cat) {
+  activeCategory = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.cat-tab[data-cat="' + cat + '"]').classList.add('active');
+  renderSubjects();
+}
+
+// ===== Add/Delete Subjects on Main Page =====
+function deleteSubjectCard(id) {
+  const sub = subjects.find(s => s.id === id);
+  if (!sub) return;
+  if (!confirm('确定要删除「' + sub.name + '」吗？\n该科目的打卡记录也会被清除。')) return;
+  subjects = subjects.filter(s => s.id !== id);
+  apiSave({ subjects }).then(() => {
+    renderSubjects();
+    renderWeekView();
+  });
+}
+
+function openAddModal() {
+  document.getElementById('add-modal').classList.add('show');
+  document.getElementById('add-name').value = '';
+  document.getElementById('add-goal').value = '每天完成1次';
+  document.getElementById('add-emoji').value = '📝';
+  document.getElementById('add-name').focus();
+}
+
+function closeAddModal() { document.getElementById('add-modal').classList.remove('show'); }
+
+function saveNewSubject() {
+  const name = document.getElementById('add-name').value.trim();
+  if (!name) return;
+  const emoji = document.getElementById('add-emoji').value.trim() || '📝';
+  const goal = document.getElementById('add-goal').value.trim() || '每天完成1次';
+  const id = 'sub_' + Date.now();
+  subjects.push({ id, emoji, name, goal, starsPerDay: 1, category: activeCategory });
+  apiSave({ subjects }).then(() => {
+    closeAddModal();
+    renderSubjects();
+    renderWeekView();
+  });
+}
+
+document.getElementById('add-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeAddModal();
+});
+
+function renderParentPanel() {
+  const cats = [
+    { key: 'study', emoji: '📚', name: '学习' },
+    { key: 'chores', emoji: '🧹', name: '家务' },
+    { key: 'habits', emoji: '🌟', name: '生活习惯' },
+  ];
+  const panel = document.getElementById('subject-settings');
+  let html = '';
+  cats.forEach(cat => {
+    const catSubjects = subjects.filter(s => (s.category || 'study') === cat.key);
+    html += '<div style="font-size:13px;font-weight:700;color:var(--purple-dark);margin:8px 0 6px;">' + cat.emoji + ' ' + cat.name + '</div>';
+    if (catSubjects.length === 0) {
+      html += '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">暂无科目</div>';
+    } else {
+      html += catSubjects.map(s => `
+        <div class="subject-list-item">
+          <input class="emoji-input" value="${s.emoji}" onchange="updateSubjectField('${s.id}','emoji',this.value)">
+          <input class="name-input" value="${s.name}" onchange="updateSubjectField('${s.id}','name',this.value)">
+          <select style="padding:6px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;outline:none;" onchange="updateSubjectField('${s.id}','category',this.value)">
+            ${cats.map(c => `<option value="${c.key}" ${(s.category||'study')===c.key?'selected':''}>${c.name}</option>`).join('')}
+          </select>
+          <button class="del-subject" onclick="removeSubject('${s.id}')">×</button>
+        </div>
+      `).join('');
+    }
+  });
+  html += '<div style="margin-top:12px;">' + cats.map(cat =>
+    `<button class="btn btn-purple" style="margin-right:6px;margin-bottom:6px;" onclick="addSubject('${cat.key}')">+ ${cat.emoji} ${cat.name}</button>`
+  ).join('') + '</div>';
+  panel.innerHTML = html;
+
+  const rpanel = document.getElementById('reward-settings');
+  rpanel.innerHTML = rewards.map(r => `
+    <div class="subject-list-item">
+      <input class="emoji-input" value="${r.emoji}" onchange="updateRewardField('${r.id}','emoji',this.value)">
+      <input class="name-input" value="${r.name}" onchange="updateRewardField('${r.id}','name',this.value)">
+      <input type="number" value="${r.cost}" style="width:60px;padding:6px;border:1px solid #E5E7EB;border-radius:8px;font-size:14px;text-align:center;outline:none;" onchange="updateRewardField('${r.id}','cost',parseInt(this.value)||0)" placeholder="⭐">
+      <button class="del-subject" onclick="removeReward('${r.id}')">×</button>
+    </div>
+  `).join('');
+}
+
+function renderRewardModal() {
+  const list = document.getElementById('reward-list');
+  list.innerHTML = rewards.map(r => {
+    const canAfford = totalStars >= r.cost;
+    return `
+    <div class="reward-item ${canAfford ? 'affordable' : ''}">
+      <div class="reward-emoji">${r.emoji}</div>
+      <div class="reward-info">
+        <div class="reward-name">${r.name}</div>
+        <div class="reward-cost">需要 ${r.cost} ⭐</div>
+      </div>
+      <button class="reward-btn ${canAfford ? 'earned' : ''}" onclick="redeemReward('${r.id}')" ${canAfford ? '' : 'disabled'}>
+        ${canAfford ? '兑换' : '不够'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+// ===== Actions =====
+async function toggleSubject(subjectId) {
+  const today = todayStr();
+  const isDone = !!(records[today] && records[today][subjectId]);
+
+  if (isDone) {
+    // Undo
+    const ok = await apiCheck(subjectId, 'uncheck');
+    if (ok) {
+      renderSubjects();
+      renderWeekView();
+      updateStreakAndStars();
+    }
+  } else {
+    // Check
+    const ok = await apiCheck(subjectId, 'check');
+    if (ok) {
+      sparkAtCard(subjectId);
+      // Check if all done
+      const curRec = records[today] || {};
+      const allDone = subjects.every(s => curRec[s.id]);
+      if (allDone) confettiBurst();
+      renderSubjects();
+      renderWeekView();
+      updateStreakAndStars();
+    }
+  }
+}
+
+function sparkAtCard(subjectId) {
+  const card = document.getElementById('card-' + subjectId);
+  if (!card) return;
+  const rect = card.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const emojis = ['⭐','✨','🌟','💫','🎉'];
+  for (let i = 0; i < 6; i++) {
+    const el = document.createElement('div');
+    el.className = 'spark';
+    el.textContent = emojis[i % emojis.length];
+    el.style.left = (cx + (Math.random() - 0.5) * 120) + 'px';
+    el.style.top = (cy + (Math.random() - 0.5) * 80) + 'px';
+    el.style.animationDuration = (0.6 + Math.random() * 0.8) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+  }
+}
+
+function confettiBurst() {
+  const emojis = ['🎉','🎊','🌟','💖','🦄','🎀','✨','💫','🏆','👑'];
+  for (let i = 0; i < 30; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = Math.random() * 100 + '%';
+      el.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }, i * 60);
+  }
+}
+
+function updateStreakAndStars() {
+  let streak = 0;
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const ds = d.toISOString().slice(0, 10);
+    const rec = records[ds] || {};
+    const hasAny = subjects.some(s => rec[s.id]);
+    if (hasAny) streak++;
+    else break;
+  }
+  document.getElementById('streak-num').textContent = streak;
+  document.getElementById('total-stars').textContent = totalStars;
+
+  const msg = document.getElementById('streak-msg');
+  if (streak >= 30) msg.textContent = '🏆';
+  else if (streak >= 14) msg.textContent = '👑';
+  else if (streak >= 7) msg.textContent = '💪';
+  else if (streak >= 3) msg.textContent = '😊';
+  else msg.textContent = '💪';
+}
+
+// ===== Reward System =====
+function openRewardModal() {
+  renderRewardModal();
+  document.getElementById('reward-modal').classList.add('show');
+}
+function closeRewardModal() { document.getElementById('reward-modal').classList.remove('show'); }
+document.getElementById('reward-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeRewardModal();
+});
+
+async function redeemReward(rewardId) {
+  const reward = rewards.find(r => r.id === rewardId);
+  if (!reward || totalStars < reward.cost) return;
+  totalStars -= reward.cost;
+  await apiSave({ totalStars });
+  updateStreakAndStars();
+  renderRewardModal();
+  confettiBurst();
+  setTimeout(() => alert('🎉 太棒了！' + babyName + '兑换了「' + reward.name + '」！\n记得兑现承诺哦～'), 500);
+}
+
+// ===== Parent Panel =====
+function toggleParentPanel() {
+  const panel = document.getElementById('parent-panel');
+  panel.classList.toggle('show');
+  if (panel.classList.contains('show')) renderParentPanel();
+}
+
+function updateSubjectField(id, field, value) {
+  const sub = subjects.find(s => s.id === id);
+  if (sub) sub[field] = value;
+}
+
+function removeSubject(id) {
+  subjects = subjects.filter(s => s.id !== id);
+  renderParentPanel();
+}
+
+function addSubject(cat) {
+  const id = 'sub_' + Date.now();
+  const defaultNames = { study: '新科目', chores: '新家务', habits: '新习惯' };
+  const defaultEmojis = { study: '📝', chores: '🧹', habits: '🌟' };
+  subjects.push({ id, emoji: defaultEmojis[cat] || '📝', name: defaultNames[cat] || '新项目', goal: '每天完成1次', starsPerDay: 1, category: cat || 'study' });
+  renderParentPanel();
+}
+
+function updateRewardField(id, field, value) {
+  const r = rewards.find(r => r.id === id);
+  if (r) r[field] = value;
+}
+
+function removeReward(id) {
+  rewards = rewards.filter(r => r.id !== id);
+  renderParentPanel();
+}
+
+function addRewardSetting() {
+  const id = 'r_' + Date.now();
+  rewards.push({ id, emoji: '🎁', name: '新奖励', cost: 10 });
+  renderParentPanel();
+}
+
+function saveBabyName() {
+  babyName = document.getElementById('baby-name').value.trim() || '宝宝';
+  apiSave({ babyName }).then(() => updateTitle());
+}
+
+async function saveAllSettings() {
+  await apiSave({ subjects, rewards, babyName });
+  updateTitle();
+  renderAll();
+  alert('✅ 设置已保存！');
+}
+
+async function resetToday() {
+  if (!confirm('确定要重置今天的打卡记录吗？星星会被扣除哦～')) return;
+  const today = todayStr();
+  if (records[today]) {
+    const todayRec = records[today];
+    subjects.forEach(s => {
+      if (todayRec[s.id]) {
+        totalStars = Math.max(0, totalStars - (s.starsPerDay || 1));
+      }
+    });
+    delete records[today];
+    await apiSave({ records, totalStars });
+  }
+  renderAll();
+}
+
+async function resetAll() {
+  if (!confirm('⚠️ 确定要清除所有数据吗？此操作不可恢复！')) return;
+  if (!confirm('再确认一次：真的要删除所有打卡记录和星星吗？')) return;
+  records = {};
+  totalStars = 0;
+  subjects = [];
+  rewards = [];
+  babyName = '宝宝';
+  await apiSave({ records, totalStars, subjects, rewards, babyName });
+  document.getElementById('baby-name').value = babyName;
+  updateTitle();
+  renderAll();
+  document.getElementById('parent-panel').classList.remove('show');
+}
+
+// ===== Boot =====
+initApp().then(() => {
+  lastHash = JSON.stringify({ records, totalStars, babyName, subjects, rewards });
+  startPolling();
+});
+</script>
+</body>
+</html>

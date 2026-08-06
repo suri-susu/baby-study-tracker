@@ -1,0 +1,12 @@
+{
+  "name": "baby-study-tracker",
+  "version": "1.0.0",
+  "description": "宝宝学习打卡 - 多设备共享版",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
