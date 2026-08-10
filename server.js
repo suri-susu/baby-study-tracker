@@ -11,8 +11,8 @@ app.use(express.json({ limit: '2mb' }));
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Data file path
-const DATA_FILE = path.join(__dirname, 'data.json');
+// Data file path — use /tmp on Vercel (only writable directory), local file otherwise
+const DATA_FILE = process.env.VERCEL ? path.join('/tmp', 'data.json') : path.join(__dirname, 'data.json');
 
 // Default data
 const defaultData = {
